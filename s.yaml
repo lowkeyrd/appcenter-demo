@@ -12,7 +12,7 @@
 
 edition: 1.0.0
 name: hello-world-app
-access: "test-1"
+access: "test"
 
 vars: # 全局变量
   region: cn-hangzhou
