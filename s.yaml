@@ -12,17 +12,42 @@
 
 edition: 1.0.0
 name: hello-world-app
-access: "test-2"
-
-vars: # 全局变量
+access: default
+vars:
   region: cn-hangzhou
   service:
     name: hello-world-service
-    description: 'hello world by serverless devs'
-
+    description: hello world by serverless devs
 services:
-  helloworld: # 业务名称/模块名称
-    component:  fc
+  helloworld-nodejs:
+    component: devsapp/fc
+    props:
+      region: ${vars.region}
+      service: ${vars.service}
+      function:
+        name: http-trigger-nodejs12
+        description: hello world by serverless devs
+        runtime: nodejs12
+        codeUri: ./code-js
+        handler: index.handler
+        memorySize: 128
+        timeout: 600
+      triggers:
+        - name: httpTrigger
+          type: http
+          config:
+            authType: anonymous
+            methods:
+              - GET
+      customDomains:
+        - domainName: auto
+          protocol: HTTP
+          routeConfigs:
+            - path: /*
+              methods:
+                - GET
+  helloworld-python: # 业务名称/模块名称
+    component: devsapp/fc
 #    actions: # 自定义执行逻辑
 #      pre-deploy: # 在deploy之前运行
 #        - run: s build --use-docker --dockerfile ./code/Dockerfile  # 要运行的命令行
@@ -34,10 +59,10 @@ services:
       region: ${vars.region}
       service: ${vars.service}
       function:
-        name: http-trigger-nodejs12
+        name: http-trigger-py36
         description: 'hello world by serverless devs'
-        runtime: nodejs12
-        codeUri: ./code
+        runtime: python3
+        codeUri: ./code-python
         # ossBucket:
         # ossKey:  # conflict with codeUri
         handler: index.handler
@@ -57,17 +82,4 @@ services:
             - path: /*
               methods:
                 - GET
-#  next-function: # 第二个函数的案例，仅供参考
-#    # 如果在当前项目下执行 s deploy，会同时部署模块：
-#    #   helloworld：服务hello-world-service，函数cpp-event-function
-#    #   next-function：服务hello-world-service，函数next-function-example
-#    # 如果想单独部署当前服务与函数，可以执行 s + 模块名/业务名 + deploy，例如：s next-function deploy
-#    # 如果想单独部署当前函数，可以执行 s + 模块名/业务名 + deploy function，例如：s next-function deploy function
-#    # 更多命令可参考：https://github.com/devsapp/fc/tree/jiangyu-docs/docs#文档相关
-#    component: fc
-#    props:
-#      region: ${vars.region}
-#      service: ${vars.service} # 应用整体的服务配置
-#      function: # 定义一个新的函数
-#        name: next-function-example
-#        description: 'hello world by serverless devs'
+
