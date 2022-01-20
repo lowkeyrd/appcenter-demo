@@ -14,7 +14,7 @@ edition: 1.0.0
 name: hello-world-app
 access: default
 vars:
-  region: cn-hangzhou
+  region: cn-zhangjiakou
   service:
     name: hello-world-service
     description: hello world by serverless devs
